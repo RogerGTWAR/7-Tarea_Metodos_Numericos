@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Métodos Numéricos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="logo">MÉTODOS</div>
+      
+        <div class="menu-wrapper">
+          <div class="menu-section">
+            <button class="menu-button" onclick="toggleSubmenu('cerrados')">Métodos Cerrados</button>
+            <div class="submenu" id="cerrados">
+              <a href="#biseccion">Método Bisección</a>
+              <a href="#falsa">Método Falsa Posición</a>
+            </div>
+          </div>
+      
+          <div class="menu-section">
+            <button class="menu-button" onclick="toggleSubmenu('abiertos')">Métodos Abiertos</button>
+            <div class="submenu" id="abiertos">
+              <a href="#puntofijo">Método Punto Fijo</a>
+              <a href="#newton">Método Newton Raphson</a>
+              <a href="#secante">Método Secante</a>
+            </div>
+          </div>
+      
+          <div class="menu-section">
+            <a href="#senl" class="submenu-link">Newton Raphson</a>
+          </div>
+          
+          
+        </div>
+      </div>
+
+<div class="main-content">
+  <section id="biseccion" class="biseccion-scroll-section">
+    <div class="titulo-metodo">
+      Metodo de Bisección
+    </div>
+    <div class="contenido-scroll">
+    <form action="http://127.0.0.1:5000/biseccion" method="POST">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="ejercicio">Ejercicio</label>
+          <input type="text" id="ejercicio" name="ejercicio">
+        </div>
+        <div class="form-group">
+          <label for="funcion">Funcion</label>
+          <input type="text" id="funcion" name="funcion">
+        </div>
+        <div class="form-group">
+          <label for="xa">X^a</label>
+          <input type="text" id="xa" name="xa">
+        </div>
+        <div class="form-group">
+          <label for="xb">X^b</label>
+          <input type="text" id="xb" name="xb">
+        </div>
+        <div class="form-group">
+          <label for="es">Es%</label>
+          <input type="text" id="es" name="es">
+        </div>
+      </div>
+      <div class="botones-biseccion">
+        <button onclick="eliminarEjercicio(event)">🗑️ Eliminar</button>
+        <button type="submit">Calcular</button>
+        <button onclick="actualizarEjercicio(event)">🔄 Actualizar</button>
+      </div>
+      
+    </form>
+    <div class="tabla-contenedor">
+      <h2>Resultados del Método de Bisección</h2>
+      <div class="tabla-scroll">
+        <table id="tabla-resultados">
+          <thead>
+            <tr>
+              <th>Ejercicio</th>
+              <th>Iteración</th>
+              <th>X<sup>a</sup></th>
+              <th>X<sup>b</sup></th>
+              <th>f(X<sup>a</sup>)</th>
+              <th>f(X<sup>b</sup>)</th>
+              <th>X<sup>r</sup></th>
+              <th>f(X<sup>r</sup>)</th>
+              <th>Ea</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Aquí se insertan los datos -->
+          </tbody>
+        </table>
+      </div> 
+    </div>
+
+  </section>
+  
+  <section id="falsa">
+    <h2>Método de Falsa Posición</h2>
+    <p>Una mejora del método de bisección utilizando interpolación lineal...</p>
+  </section>
+
+  <section id="puntofijo">
+    <h2>Método de Punto Fijo</h2>
+    <p>Se reescribe la ecuación como x = g(x) y se itera con g(x)...</p>
+  </section>
+
+  <section id="newton">
+    <h2>Método de Newton-Raphson</h2>
+    <p>Usa la derivada para obtener aproximaciones a una raíz real...</p>
+  </section>
+
+  <section id="secante">
+    <h2>Método de la Secante</h2>
+    <p>No requiere derivada. Utiliza dos puntos para aproximar la raíz...</p>
+  </section>
+
+  <section id="senl">
+    <h2>Newton-Raphson para Sistemas</h2>
+    <p>Se aplica a sistemas de ecuaciones no lineales usando derivadas parciales...</p>
+  </section>
+</div>
+
+
+</script>
+<script src="Funciones.js"></script>
+</body>
+</html>
