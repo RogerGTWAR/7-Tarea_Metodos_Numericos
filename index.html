@@ -98,10 +98,67 @@
 
   </section>
   
-  <section id="falsa">
-    <h2>Método de Falsa Posición</h2>
-    <p>Una mejora del método de bisección utilizando interpolación lineal...</p>
+  <section id="falsa" class="falsa-scroll-section">
+    <div class="titulo-metodo">
+      Método de Falsa Posición
+    </div>
+    <div class="contenido-scroll">
+      <form action="http://127.0.0.1:5000/falsa-posicion" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ejercicio-falsa">Ejercicio</label>
+            <input type="text" id="ejercicio-falsa" name="ejercicio">
+          </div>
+          <div class="form-group">
+            <label for="funcion-falsa">Función</label>
+            <input type="text" id="funcion-falsa" name="funcion">
+          </div>
+          <div class="form-group">
+            <label for="xa-falsa">X<sup>a</sup></label>
+            <input type="text" id="xa-falsa" name="xa">
+          </div>
+          <div class="form-group">
+            <label for="xb-falsa">X<sup>b</sup></label>
+            <input type="text" id="xb-falsa" name="xb">
+          </div>
+          <div class="form-group">
+            <label for="es-falsa">Es%</label>
+            <input type="text" id="es-falsa" name="es">
+          </div>
+        </div>
+        <div class="botones-biseccion">
+          <button onclick="eliminarEjercicioFalsa(event)">🗑️ Eliminar</button>
+          <button type="submit">Calcular</button>
+          <button onclick="actualizarEjercicioFalsa(event)">🔄 Actualizar</button>
+        </div>
+      </form>
+  
+      <div class="tabla-contenedor">
+        <h2>Resultados del Método de Falsa Posición</h2>
+        <div class="tabla-scroll">
+          <table id="tabla-resultados-falsa">
+            <thead>
+              <tr>
+                <th>Ejercicio</th>
+                <th>Iteración</th>
+                <th>X<sup>a</sup></th>
+                <th>X<sup>b</sup></th>
+                <th>f(X<sup>a</sup>)</th>
+                <th>f(X<sup>b</sup>)</th>
+                <th>X<sup>r</sup></th>
+                <th>f(X<sup>r</sup>)</th>
+                <th>Ea</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertan los resultados -->
+            </tbody>
+          </table>
+        </div> 
+      </div>
+    </div>
   </section>
+  
 
   <section id="puntofijo">
     <h2>Método de Punto Fijo</h2>

@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
 import math
+import re
 import mysql.connector
 
-biseccion_bp = Blueprint('biseccion', __name__)
+falsa_bp = Blueprint('falsa_posicion', __name__)
 
-@biseccion_bp.route('/biseccion', methods=['POST'])
-def ejecutar_biseccion():
+@falsa_bp.route('/falsa-posicion', methods=['POST'])
+def ejecutar_falsa_posicion():
     try:
         funcion = request.form['funcion']
         xa = float(request.form['xa'])
@@ -22,8 +23,12 @@ def ejecutar_biseccion():
             s = s.replace("sen", "sin")
             s = s.replace("cos", "cos")
             s = s.replace("tan", "tan")
+            s = s.replace("atan", "atan")
+            s = s.replace("arctan", "atan")
+            s = s.replace("arcsin", "asin")
+            s = s.replace("arccos", "acos")
             s = s.replace("^", "**")
-            s = s.replace("e", "exp")
+            s = re.sub(r'e\*\*(\(?[^\)\+\-\*/]+?\)?)', r'exp(\1)', s)
             return s
 
         funcion = aplicar_reemplazos(funcion)
@@ -42,8 +47,13 @@ def ejecutar_biseccion():
         while True:
             fXa = f(xa)
             fXb = f(xb)
-            xr = (xa + xb) / 2
+
+            if abs(fXa - fXb) < 1e-12:
+                raise ValueError("División por cero detectada durante el cálculo de Xr.")
+
+            xr = xb - (fXb * (xa - xb)) / (fXa - fXb)
             fXr = f(xr)
+
             ea = 0 if i == 1 else abs((xr - Xr_anterior) / xr) * 100
             resultados.append((int(ejercicio), i, xa, xb, fXa, fXb, xr, fXr, round(ea, 4)))
 
@@ -61,10 +71,11 @@ def ejecutar_biseccion():
 
         conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
         cursor = conn.cursor()
-        cursor.execute("DELETE FROM metodo_biseccion WHERE ejercicio = %s", (ejercicio,))
+        cursor.execute("DELETE FROM metodo_falsa_posicion WHERE ejercicio = %s", (ejercicio,))
         for fila in resultados:
             cursor.execute("""
-                INSERT INTO metodo_biseccion (ejercicio, iteracion, xa, xb, fxa, fxb, xr, fxr, ea)
+                INSERT INTO metodo_falsa_posicion 
+                (ejercicio, iteracion, xa, xb, fxa, fxb, xr, fxr, ea)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, fila)
 
@@ -72,18 +83,19 @@ def ejecutar_biseccion():
         cursor.close()
         conn.close()
 
-        return "✅ Bisección guardada correctamente."
+        return "✅ Cálculos de falsa posición realizados y guardados correctamente."
+
     except Exception as e:
         return f"❌ Error: {str(e)}", 500
 
-@biseccion_bp.route('/resultados-biseccion')
-def resultados_biseccion():
+@falsa_bp.route('/resultados-falsa-posicion')
+def ver_resultados_falsa_posicion():
     try:
         conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
         cursor = conn.cursor()
         cursor.execute("""
             SELECT ejercicio, iteracion, xa, xb, fxa, fxb, xr, fxr, ea
-            FROM metodo_biseccion
+            FROM metodo_falsa_posicion
             ORDER BY ejercicio ASC, iteracion ASC
         """)
         filas = cursor.fetchall()
@@ -92,3 +104,32 @@ def resultados_biseccion():
         return jsonify(filas)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@falsa_bp.route('/eliminar-falsa-posicion/<int:ejercicio>', methods=['DELETE'])
+def eliminar_falsa_posicion(ejercicio):
+    try:
+        conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM metodo_falsa_posicion WHERE ejercicio = %s", (ejercicio,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return f"Registros del ejercicio #{ejercicio} eliminados correctamente."
+    except Exception as e:
+        return f"❌ Error: {str(e)}", 500
+
+@falsa_bp.route('/actualizar-falsa-posicion', methods=['POST'])
+def actualizar_falsa_posicion():
+    ejercicio = int(request.form['ejercicio'])
+
+    conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM metodo_falsa_posicion WHERE ejercicio = %s", (ejercicio,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    request.form = request.form.copy()
+    request.form['ejercicio'] = str(ejercicio)
+
+    return ejecutar_falsa_posicion()

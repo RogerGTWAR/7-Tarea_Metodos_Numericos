@@ -98,7 +98,91 @@ function actualizarEjercicio() {
     });
 }
 
+// FUNCIONES PARA FALSA POSICION
 
+function cargarResultadosFalsa() {
+  fetch('http://127.0.0.1:5000/resultados-falsa-posicion')
+    .then(response => response.json())
+    .then(data => {
+      const tabla = document.getElementById('tabla-resultados-falsa').getElementsByTagName('tbody')[0];
+      tabla.innerHTML = '';
+
+      data.forEach(fila => {
+        const nuevaFila = tabla.insertRow();
+        fila.forEach(valor => {
+          const celda = nuevaFila.insertCell();
+          celda.textContent = valor;
+        });
+      });
+    })
+    .catch(error => console.error('Error cargando resultados:', error));
+}
+
+function eliminarEjercicioFalsa(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById('ejercicio-falsa').value;
+
+  if (!ejercicio) {
+    alert('Por favor, ingresa el número de ejercicio a eliminar.');
+    return;
+  }
+
+  fetch(`http://127.0.0.1:5000/eliminar-falsa-posicion/${ejercicio}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosFalsa();
+    })
+    .catch(error => console.error('Error al eliminar ejercicio:', error));
+}
+
+function actualizarEjercicioFalsa(event) {
+  event.preventDefault();
+  const formData = new FormData();
+  formData.append('ejercicio', document.getElementById('ejercicio-falsa').value);
+  formData.append('funcion', document.getElementById('funcion-falsa').value);
+  formData.append('xa', document.getElementById('xa-falsa').value);
+  formData.append('xb', document.getElementById('xb-falsa').value);
+  formData.append('es', document.getElementById('es-falsa').value);
+
+  fetch('http://127.0.0.1:5000/actualizar-falsa-posicion', {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosFalsa();
+    })
+    .catch(error => console.error('Error al actualizar ejercicio:', error));
+}
+
+// Cargar resultados automáticamente al abrir la página
+window.addEventListener('load', function () {
+  cargarResultadosFalsa();
+});
+
+// 🔥 NUEVO: FORMULARIO FALSA POSICIÓN
+const formFalsa = document.querySelector('form[action="http://127.0.0.1:5000/falsa-posicion"]');
+formFalsa.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const formData = new FormData(formFalsa);
+  fetch("http://127.0.0.1:5000/falsa-posicion", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.text())
+    .then(msg => {
+      console.log("Servidor (Falsa):", msg);
+      cargarResultadosFalsa(); // 👈 actualizar tabla
+    })
+    .catch(error => {
+      console.error("Error Falsa Posición:", error);
+    });
+});
 
 
 
