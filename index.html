@@ -160,20 +160,180 @@
   </section>
   
 
-  <section id="puntofijo">
-    <h2>Método de Punto Fijo</h2>
-    <p>Se reescribe la ecuación como x = g(x) y se itera con g(x)...</p>
+  <section id="puntofijo" class="puntofijo-scroll-section">
+    <div class="titulo-metodo">
+      Método de Punto Fijo
+    </div>
+    <div class="contenido-scroll">
+      <form action="http://127.0.0.1:5000/punto-fijo" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ejercicio-puntofijo">Ejercicio</label>
+            <input type="text" id="ejercicio-puntofijo" name="ejercicio">
+          </div>
+          <div class="form-group">
+            <label for="funcion-puntofijo">g(x)</label>
+            <input type="text" id="funcion-puntofijo" name="funcion">
+          </div>
+          <div class="form-group">
+            <label for="x0-puntofijo">X<sub>0</sub></label>
+            <input type="text" id="x0-puntofijo" name="x0">
+          </div>
+          <div class="form-group">
+            <label for="es-puntofijo">Es%</label>
+            <input type="text" id="es-puntofijo" name="es">
+          </div>
+        </div>
+        <div class="botones-biseccion">
+          <button onclick="eliminarEjercicioPuntoFijo(event)">🗑️ Eliminar</button>
+          <button type="submit">Calcular</button>
+          <button onclick="actualizarEjercicioPuntoFijo(event)">🔄 Actualizar</button>
+        </div>
+      </form>
+  
+      <div class="tabla-contenedor">
+        <h2>Resultados del Método de Punto Fijo</h2>
+        <div class="tabla-scroll">
+          <table id="tabla-resultados-puntofijo">
+            <thead>
+              <tr>
+                <th>Ejercicio</th>
+                <th>Iteración</th>
+                <th>X<sub>i</sub></th>
+                <th>g(X<sub>i</sub>)</th>
+                <th>Ea (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertan los datos de Punto Fijo -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </section>
+  
 
-  <section id="newton">
-    <h2>Método de Newton-Raphson</h2>
-    <p>Usa la derivada para obtener aproximaciones a una raíz real...</p>
+  <section id="newton" class="newton-scroll-section">
+    <div class="titulo-metodo">
+      Método de Newton-Raphson
+    </div>
+    <div class="contenido-scroll">
+      <form action="http://127.0.0.1:5000/newton-raphson" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ejercicio-newton">Ejercicio</label>
+            <input type="text" id="ejercicio-newton" name="ejercicio">
+          </div>
+          <div class="form-group">
+            <label for="funcion-newton">f(x)</label>
+            <input type="text" id="funcion-newton" name="funcion">
+          </div>
+          <div class="form-group">
+            <label for="derivada-newton">f'(x)</label>
+            <input type="text" id="derivada-newton" name="derivada">
+          </div>
+          <div class="form-group">
+            <label for="x0-newton">X<sub>0</sub></label>
+            <input type="text" id="x0-newton" name="x0">
+          </div>
+          <div class="form-group">
+            <label for="es-newton">Es%</label>
+            <input type="text" id="es-newton" name="es">
+          </div>
+        </div>
+        <div class="botones-biseccion">
+          <button onclick="eliminarEjercicioNewton(event)">🗑️ Eliminar</button>
+          <button type="submit">Calcular</button>
+          <button onclick="actualizarEjercicioNewton(event)">🔄 Actualizar</button>
+        </div>
+      </form>
+  
+      <div class="tabla-contenedor">
+        <h2>Resultados del Método de Newton-Raphson</h2>
+        <div class="tabla-scroll">
+          <table id="tabla-resultados-newton">
+            <thead>
+              <tr>
+                <th>Ejercicio</th>
+                <th>Iteración</th>
+                <th>X<sub>i</sub></th>
+                <th>f(X<sub>i</sub>)</th>
+                <th>f'(X<sub>i</sub>)</th>
+                <th>X<sub>i+1</sub></th>
+                <th>Ea (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertan los datos de Newton-Raphson -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </section>
+  
 
-  <section id="secante">
-    <h2>Método de la Secante</h2>
-    <p>No requiere derivada. Utiliza dos puntos para aproximar la raíz...</p>
+  <section id="secante" class="secante-scroll-section">
+    <div class="titulo-metodo">
+      Método de la Secante
+    </div>
+    <div class="contenido-scroll">
+      <form action="http://127.0.0.1:5000/secante" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ejercicio-secante">Ejercicio</label>
+            <input type="text" id="ejercicio-secante" name="ejercicio">
+          </div>
+          <div class="form-group">
+            <label for="funcion-secante">f(x)</label>
+            <input type="text" id="funcion-secante" name="funcion">
+          </div>
+          <div class="form-group">
+            <label for="x0-secante">X<sub>i-1</sub></label>
+            <input type="text" id="x0-secante" name="x0">
+          </div>
+          <div class="form-group">
+            <label for="x1-secante">X<sub>i</sub></label>
+            <input type="text" id="x1-secante" name="x1">
+          </div>
+          <div class="form-group">
+            <label for="es-secante">Es%</label>
+            <input type="text" id="es-secante" name="es">
+          </div>
+        </div>
+        <div class="botones-biseccion">
+          <button onclick="eliminarEjercicioSecante(event)">🗑️ Eliminar</button>
+          <button type="submit">Calcular</button>
+          <button onclick="actualizarEjercicioSecante(event)">🔄 Actualizar</button>
+        </div>
+      </form>
+  
+      <div class="tabla-contenedor">
+        <h2>Resultados del Método de la Secante</h2>
+        <div class="tabla-scroll">
+          <table id="tabla-resultados-secante">
+            <thead>
+              <tr>
+                <th>Ejercicio</th>
+                <th>Iteración</th>
+                <th>X<sub>i-1</sub></th>
+                <th>X<sub>i</sub></th>
+                <th>f(X<sub>i-1</sub>)</th>
+                <th>f(X<sub>i</sub>)</th>
+                <th>X<sub>i+1</sub></th>
+                <th>Ea (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Aquí se insertan los datos de Secante -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </section>
+  
 
   <section id="senl">
     <h2>Newton-Raphson para Sistemas</h2>

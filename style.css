@@ -342,3 +342,90 @@ button[type="submit"]:hover {
   padding: 10px;
   background-color: #ffffff;
 }
+/* ------------------ SECCIÓN PUNTO FIJO ------------------ */
+.puntofijo-scroll-section {
+  height: 2000px;
+  background-color: #fffde8;
+  padding: 0;
+  margin-bottom: 100px;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TABLA PUNTO FIJO */
+#tabla-resultados-puntofijo {
+  min-width: 900px;
+  margin-top: 10px;
+  padding: 10px;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+#tabla-resultados-puntofijo th {
+  background-color: #d6f5d6;
+  font-weight: bold;
+  padding: 10px;
+}
+
+#tabla-resultados-puntofijo td {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+/* ------------------ SECCIÓN NEWTON-RAPHSON ------------------ */
+.newton-scroll-section {
+  height: 2000px;
+  background-color: #fffde8;
+  padding: 0;
+  margin-bottom: 100px;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* TABLA NEWTON-RAPHSON */
+#tabla-resultados-newton {
+  min-width: 900px;
+  margin-top: 10px;
+  padding: 10px;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+#tabla-resultados-newton th {
+  background-color: #d6f5d6;
+  font-weight: bold;
+  padding: 10px;
+}
+
+#tabla-resultados-newton td {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+/* TABLA SECANTE */
+#tabla-resultados-secante {
+  min-width: 900px;
+  margin-top: 10px;
+  padding: 10px;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+#tabla-resultados-secante th {
+  background-color: #d6f5d6;
+  font-weight: bold;
+  padding: 10px;
+}
+
+#tabla-resultados-secante td {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}

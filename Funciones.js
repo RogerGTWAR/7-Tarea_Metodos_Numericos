@@ -158,12 +158,6 @@ function actualizarEjercicioFalsa(event) {
     })
     .catch(error => console.error('Error al actualizar ejercicio:', error));
 }
-
-// Cargar resultados automáticamente al abrir la página
-window.addEventListener('load', function () {
-  cargarResultadosFalsa();
-});
-
 // 🔥 NUEVO: FORMULARIO FALSA POSICIÓN
 const formFalsa = document.querySelector('form[action="http://127.0.0.1:5000/falsa-posicion"]');
 formFalsa.addEventListener("submit", function (event) {
@@ -184,7 +178,252 @@ formFalsa.addEventListener("submit", function (event) {
     });
 });
 
+// FUNCIONES PARA PUNTO FIJO
 
+function cargarResultadosPuntoFijo() {
+  fetch('http://127.0.0.1:5000/resultados-punto-fijo')
+    .then(response => response.json())
+    .then(data => {
+      const tabla = document.getElementById('tabla-resultados-puntofijo').getElementsByTagName('tbody')[0];
+      tabla.innerHTML = '';
 
+      data.forEach(fila => {
+        const nuevaFila = tabla.insertRow();
+        fila.forEach(valor => {
+          const celda = nuevaFila.insertCell();
+          celda.textContent = valor;
+        });
+      });
+    })
+    .catch(error => console.error('Error cargando resultados Punto Fijo:', error));
+}
 
+function eliminarEjercicioPuntoFijo(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById('ejercicio-puntofijo').value;
 
+  if (!ejercicio) {
+    alert('Por favor, ingresa el número de ejercicio a eliminar.');
+    return;
+  }
+
+  fetch(`http://127.0.0.1:5000/eliminar-punto-fijo/${ejercicio}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosPuntoFijo();
+    })
+    .catch(error => console.error('Error al eliminar ejercicio Punto Fijo:', error));
+}
+
+function actualizarEjercicioPuntoFijo(event) {
+  event.preventDefault();
+  const formData = new FormData();
+  formData.append('ejercicio', document.getElementById('ejercicio-puntofijo').value);
+  formData.append('funcion', document.getElementById('funcion-puntofijo').value);
+  formData.append('x0', document.getElementById('x0-puntofijo').value);
+  formData.append('es', document.getElementById('es-puntofijo').value);
+
+  fetch('http://127.0.0.1:5000/actualizar-punto-fijo', {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosPuntoFijo();
+    })
+    .catch(error => console.error('Error al actualizar ejercicio Punto Fijo:', error));
+}
+
+// 🔥 FORMULARIO PUNTO FIJO
+const formPuntoFijo = document.querySelector('form[action="http://127.0.0.1:5000/punto-fijo"]');
+formPuntoFijo.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const formData = new FormData(formPuntoFijo);
+  fetch("http://127.0.0.1:5000/punto-fijo", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.text())
+    .then(msg => {
+      console.log("Servidor (Punto Fijo):", msg);
+      cargarResultadosPuntoFijo(); // 👈 actualizar tabla
+    })
+    .catch(error => {
+      console.error("Error Punto Fijo:", error);
+    });
+});
+// FUNCIONES PARA NEWTON-RAPHSON
+
+function cargarResultadosNewton() {
+  fetch('http://127.0.0.1:5000/resultados-newton-raphson')
+    .then(response => response.json())
+    .then(data => {
+      const tabla = document.getElementById('tabla-resultados-newton').getElementsByTagName('tbody')[0];
+      tabla.innerHTML = '';
+
+      data.forEach(fila => {
+        const nuevaFila = tabla.insertRow();
+        fila.forEach(valor => {
+          const celda = nuevaFila.insertCell();
+          celda.textContent = valor;
+        });
+      });
+    })
+    .catch(error => console.error('Error cargando resultados Newton-Raphson:', error));
+}
+
+function eliminarEjercicioNewton(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById('ejercicio-newton').value;
+
+  if (!ejercicio) {
+    alert('Por favor, ingresa el número de ejercicio a eliminar.');
+    return;
+  }
+
+  fetch(`http://127.0.0.1:5000/eliminar-newton-raphson/${ejercicio}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosNewton();
+    })
+    .catch(error => console.error('Error al eliminar ejercicio Newton-Raphson:', error));
+}
+
+function actualizarEjercicioNewton(event) {
+  event.preventDefault();
+  const formData = new FormData();
+  formData.append('ejercicio', document.getElementById('ejercicio-newton').value);
+  formData.append('funcion', document.getElementById('funcion-newton').value);
+  formData.append('derivada', document.getElementById('derivada-newton').value);
+  formData.append('x0', document.getElementById('x0-newton').value);
+  formData.append('es', document.getElementById('es-newton').value);
+
+  fetch('http://127.0.0.1:5000/actualizar-newton-raphson', {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosNewton();
+    })
+    .catch(error => console.error('Error al actualizar ejercicio Newton-Raphson:', error));
+}
+
+// 🔥 FORMULARIO NEWTON-RAPHSON
+const formNewton = document.querySelector('form[action="http://127.0.0.1:5000/newton-raphson"]');
+formNewton.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const formData = new FormData(formNewton);
+  fetch("http://127.0.0.1:5000/newton-raphson", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.text())
+    .then(msg => {
+      console.log("Servidor (Newton-Raphson):", msg);
+      cargarResultadosNewton(); // 👈 actualizar tabla
+    })
+    .catch(error => {
+      console.error("Error Newton-Raphson:", error);
+    });
+});
+
+// FUNCIONES PARA SECANTE
+
+function cargarResultadosSecante() {
+  fetch('http://127.0.0.1:5000/resultados-secante')
+    .then(response => response.json())
+    .then(data => {
+      const tabla = document.getElementById('tabla-resultados-secante').getElementsByTagName('tbody')[0];
+      tabla.innerHTML = '';
+
+      data.forEach(fila => {
+        const nuevaFila = tabla.insertRow();
+        fila.forEach(valor => {
+          const celda = nuevaFila.insertCell();
+          celda.textContent = valor;
+        });
+      });
+    })
+    .catch(error => console.error('Error cargando resultados Secante:', error));
+}
+
+function eliminarEjercicioSecante(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById('ejercicio-secante').value;
+
+  if (!ejercicio) {
+    alert('Por favor, ingresa el número de ejercicio a eliminar.');
+    return;
+  }
+
+  fetch(`http://127.0.0.1:5000/eliminar-secante/${ejercicio}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosSecante();
+    })
+    .catch(error => console.error('Error al eliminar ejercicio Secante:', error));
+}
+
+function actualizarEjercicioSecante(event) {
+  event.preventDefault();
+  const formData = new FormData();
+  formData.append('ejercicio', document.getElementById('ejercicio-secante').value);
+  formData.append('funcion', document.getElementById('funcion-secante').value);
+  formData.append('x0', document.getElementById('x0-secante').value);
+  formData.append('x1', document.getElementById('x1-secante').value);
+  formData.append('es', document.getElementById('es-secante').value);
+
+  fetch('http://127.0.0.1:5000/actualizar-secante', {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosSecante();
+    })
+    .catch(error => console.error('Error al actualizar ejercicio Secante:', error));
+}
+
+// 🔥 FORMULARIO SECANTE
+const formSecante = document.querySelector('form[action="http://127.0.0.1:5000/secante"]');
+formSecante.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const formData = new FormData(formSecante);
+  fetch("http://127.0.0.1:5000/secante", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.text())
+    .then(msg => {
+      console.log("Servidor (Secante):", msg);
+      cargarResultadosSecante(); // 👈 actualizar tabla
+    })
+    .catch(error => {
+      console.error("Error Secante:", error);
+    });
+});
+
+// 🚀 Cargar resultados automáticamente al abrir la página
+window.addEventListener('load', function () {
+  cargarResultados();         // Bisección
+  cargarResultadosFalsa();    // Falsa Posición
+  cargarResultadosPuntoFijo(); // Punto Fijo
+  cargarResultadosNewton();    // Newton-Raphson
+  cargarResultadosSecante(); // ⬅️ Agregamos esta nueva carga automática
+});
