@@ -427,3 +427,41 @@ window.addEventListener('load', function () {
   cargarResultadosNewton();    // Newton-Raphson
   cargarResultadosSecante(); // ⬅️ Agregamos esta nueva carga automática
 });
+
+
+
+
+//Exportacion a Excel//
+function exportarTabla(idTabla, nombreArchivo, nombreHoja) {
+  const tabla = document.getElementById(idTabla);
+  const wb = XLSX.utils.table_to_book(tabla, { sheet: nombreHoja });
+  XLSX.writeFile(wb, nombreArchivo);
+}
+
+
+//Exportar todo a excel//
+function exportarTodo() {
+  // Crear un nuevo libro de Excel
+  const wb = XLSX.utils.book_new();
+
+  // Lista de tablas y nombres de hojas
+  const tablas = [
+    { id: 'tabla-resultados', nombre: 'Biseccion' },
+    { id: 'tabla-resultados-falsa', nombre: 'FalsaPosicion' },
+    { id: 'tabla-resultados-puntofijo', nombre: 'PuntoFijo' },
+    { id: 'tabla-resultados-newton', nombre: 'NewtonRaphson' },
+    { id: 'tabla-resultados-secante', nombre: 'Secante' }
+  ];
+
+  // Recorrer cada tabla y agregarla como hoja
+  tablas.forEach(tablaInfo => {
+    const tabla = document.getElementById(tablaInfo.id);
+    if (tabla) {
+      const ws = XLSX.utils.table_to_sheet(tabla);
+      XLSX.utils.book_append_sheet(wb, ws, tablaInfo.nombre);
+    }
+  });
+
+  // Guardar el archivo
+  XLSX.writeFile(wb, 'metodos_numericos_completo.xlsx');
+}
