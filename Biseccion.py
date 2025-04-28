@@ -92,3 +92,54 @@ def resultados_biseccion():
         return jsonify(filas)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+@biseccion_bp.route('/eliminar-biseccion/<int:ejercicio>', methods=['DELETE'])
+def eliminar_biseccion(ejercicio):
+    try:
+        conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
+        cursor = conn.cursor()
+        
+        # Elimina todas las filas que pertenezcan a ese ejercicio
+        cursor.execute("DELETE FROM metodo_biseccion WHERE ejercicio = %s", (ejercicio,))
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return "✅ Ejercicio eliminado correctamente."
+    except Exception as e:
+        return f"❌ Error al eliminar: {str(e)}", 500
+@biseccion_bp.route('/actualizar-biseccion', methods=['POST'])
+def actualizar_biseccion():
+    try:
+        ejercicio = int(request.form['ejercicio'])
+
+        # Primero eliminar el ejercicio existente
+        conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM metodo_biseccion WHERE ejercicio = %s", (ejercicio,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        # Ahora simplemente reutilizamos la función de ejecutar_biseccion
+        request.form = request.form.copy()
+        request.form['ejercicio'] = str(ejercicio)
+
+        return ejecutar_biseccion()
+
+    except Exception as e:
+        return f"❌ Error al actualizar: {str(e)}", 500
+
+
+
+
+
+
+
+
+
+
+
+
+
+

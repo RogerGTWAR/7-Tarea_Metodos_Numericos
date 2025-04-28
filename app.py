@@ -1,9 +1,11 @@
-from flask import Flask, send_file, send_from_directory
+from flask import Flask, send_file, send_from_directory, jsonify
 from Biseccion import biseccion_bp
 from Falsa_Posicion import falsa_bp
 from Punto_Fijo import puntofijo_bp
 from Newton_Raphson import newton_bp
 from Secante import secante_bp   # <-- ✅ Agregamos Secante
+from Newton_Raphson_SENL import newton_sistemas_bp  # ✅ <<<< Nuevo Blueprint para Newton-Raphson Sistemas
+import mysql.connector
 
 app = Flask(__name__)
 
@@ -26,6 +28,10 @@ app.register_blueprint(falsa_bp)
 app.register_blueprint(puntofijo_bp)
 app.register_blueprint(newton_bp)
 app.register_blueprint(secante_bp)   # <-- ✅ Registramos el Blueprint de Secante
+app.register_blueprint(newton_sistemas_bp)   # ✅ <<<< Aquí registras también el nuevo NR-SENL
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+

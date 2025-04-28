@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="https://images.vexels.com/media/users/3/135555/isolated/preview/b45edb6f6eee6d71bcc54eb911e54f3b-icono-de-numeros-de-calculadora.png" type="image/png">
   <title>Métodos Numéricos</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -43,6 +44,27 @@
 
 <div class="main-content">
 
+  <section id="portada" style="min-height: 100vh; background: linear-gradient(to bottom, #e0f7fa, #ffffff); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center;">
+  
+    <div style="animation: fadeInDown 1.2s ease-out;">
+      <h1 style="font-size: 48px; color: #004d40; margin-bottom: 20px;">Métodos Numéricos</h1>
+      <h2 style="font-size: 28px; color: #00796b; margin-bottom: 30px;">Aprende, Explora y Domina los Métodos de Cálculo Numérico</h2>
+    </div>
+  
+    <img src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png" alt="Métodos Numéricos" style="width: 180px; margin-bottom: 40px; animation: float 3s ease-in-out infinite;">
+  
+    <p style="font-size: 20px; max-width: 800px; margin: 0 auto 40px; color: #555; line-height: 1.6;">
+      Explora los principales métodos para encontrar soluciones numéricas a problemas matemáticos, con un enfoque práctico, visual y amigable. ¡Aprende de forma sencilla y efectiva!
+    </p>
+  
+    <a href="#inicio" style="background-color: #004d40; color: white; padding: 14px 32px; font-size: 20px; font-weight: bold; text-decoration: none; border-radius: 10px; transition: background-color 0.3s, transform 0.3s;"
+       onmouseover="this.style.backgroundColor='#00796b'; this.style.transform='scale(1.05)';"
+       onmouseout="this.style.backgroundColor='#004d40'; this.style.transform='scale(1)';">
+      🚀 Comenzar
+    </a>
+  
+  </section>
+  
   <!-- Sección de Inicio -->
   <section id="inicio" class="inicio-scroll-section">
     <div class="titulo-metodo">
@@ -175,6 +197,7 @@
           </tbody>
         </table>
       </div> 
+
       <div style="margin-top: 20px; text-align: center;">
         <button onclick="exportarTabla('tabla-resultados', 'biseccion_resultados.xlsx', 'Biseccion')" 
                 style="background-color: #004d40; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: background-color 0.3s;"
@@ -192,6 +215,7 @@
           📚 Exportar TODO a un solo Excel
         </button>
       </div>
+      
     </div>
 
   </section>
@@ -329,7 +353,10 @@
             📄 Exportar a Excel
           </button>
         </div>
-        
+                  <!-- Canvas donde se dibujará la gráfica -->
+          <div style="width: 90%; margin: 30px auto;">
+            <canvas id="grafica-biseccion"></canvas>
+          </div>
       </div>
     </div>
   </section>
@@ -478,11 +505,115 @@
   </section>
   
 
-  <section id="senl">
+  <section id="senl" class="senl-scroll-section">
     <hr class="linea-seccion">
-    <h2>Newton-Raphson para Sistemas</h2>
-    <p>Se aplica a sistemas de ecuaciones no lineales usando derivadas parciales...</p>
+    <div class="titulo-metodo">
+      Método Newton-Raphson para Sistemas
+    </div>
+    <div class="contenido-scroll">
+      <form action="http://127.0.0.1:5000/newton-sistemas" method="POST">
+        <div class="form-row">
+      
+          <div class="form-group">
+            <label for="ejercicio-newton-sistemas">Ejercicio</label>
+            <input type="text" id="ejercicio-newton-sistemas" name="ejercicio">
+          </div>
+      
+          <div class="form-group">
+            <label for="funcion1">Función 1 f(x,y)</label>
+            <input type="text" id="funcion1" name="vector_funciones">
+          </div>
+      
+          <div class="form-group">
+            <label for="funcion2">Función 2 g(x,y)</label>
+            <input type="text" id="funcion2" name="vector_funciones">
+          </div>
+      
+          <div class="form-group">
+            <label for="j11">Jacobiano J11</label>
+            <input type="text" id="j11" name="jacobiano">
+          </div>
+      
+          <div class="form-group">
+            <label for="j12">Jacobiano J12</label>
+            <input type="text" id="j12" name="jacobiano">
+          </div>
+      
+          <div class="form-group">
+            <label for="j21">Jacobiano J21</label>
+            <input type="text" id="j21" name="jacobiano">
+          </div>
+      
+          <div class="form-group">
+            <label for="j22">Jacobiano J22</label>
+            <input type="text" id="j22" name="jacobiano">
+          </div>
+      
+          <div class="form-group">
+            <label for="x-inicial">x inicial</label>
+            <input type="text" id="x-inicial" name="x_inicial">
+          </div>
+      
+          <div class="form-group">
+            <label for="y-inicial">y inicial</label>
+            <input type="text" id="y-inicial" name="y_inicial">
+          </div>
+      
+          <div class="form-group">
+            <label for="es-newton-sistemas">Es%</label>
+            <input type="text" id="es-newton-sistemas" name="es">
+          </div>
+      
+        </div>
+      
+        <div class="botones-biseccion">
+          <button onclick="eliminarEjercicioNewtonSistemas(event)">🗑️ Eliminar</button>
+          <button type="submit">Calcular</button>
+          <button onclick="actualizarEjercicioNewtonSistemas(event)">🔄 Actualizar</button>
+        </div>
+      </form>
+      
+  
+      <div class="tabla-contenedor">
+        <h2>Resultados Newton-Raphson Sistemas</h2>
+        <div class="tabla-scroll">
+          <table id="tabla-resultados-newton-sistemas">
+            <thead>
+              <tr>
+                <th>Ejercicio</th>
+                <th>Iteración</th>
+                <th>X</th>
+                <th>Vector F</th>
+                <th>Matriz J</th>
+                <th>Inversa J</th>
+                <th>Xi</th>
+                <th>Ea</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              <!-- Resultados aquí -->
+            </tbody>
+          </table>
+        </div>
+  
+        <div style="margin-top: 20px; text-align: center;">
+          <button onclick="exportarTabla('tabla-resultados-newton-sistemas', 'newton_sistemas_resultados.xlsx', 'NewtonSistemas')" 
+                  style="background-color: #004d40; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: background-color 0.3s;"
+                  onmouseover="this.style.backgroundColor='#00796b'; this.style.transform='scale(1.05)';"
+                  onmouseout="this.style.backgroundColor='#004d40'; this.style.transform='scale(1)';">
+            📄 Exportar a Excel
+          </button>
+        </div>
+  
+      </div>
+    </div>
   </section>
+  
+
+
+
+
 
   <section id="fin" class="fin-scroll-section">
     <hr class="linea-seccion">
@@ -635,6 +766,8 @@
 </footer>
 
 </div>
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="Funciones.js"></script>

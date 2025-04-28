@@ -419,18 +419,6 @@ formSecante.addEventListener("submit", function (event) {
     });
 });
 
-// 🚀 Cargar resultados automáticamente al abrir la página
-window.addEventListener('load', function () {
-  cargarResultados();         // Bisección
-  cargarResultadosFalsa();    // Falsa Posición
-  cargarResultadosPuntoFijo(); // Punto Fijo
-  cargarResultadosNewton();    // Newton-Raphson
-  cargarResultadosSecante(); // ⬅️ Agregamos esta nueva carga automática
-});
-
-
-
-
 //Exportacion a Excel//
 function exportarTabla(idTabla, nombreArchivo, nombreHoja) {
   const tabla = document.getElementById(idTabla);
@@ -465,3 +453,142 @@ function exportarTodo() {
   // Guardar el archivo
   XLSX.writeFile(wb, 'metodos_numericos_completo.xlsx');
 }
+
+
+
+
+
+
+
+function cargarResultadosNewtonSistemas() {
+  fetch('http://127.0.0.1:5000/resultados-newton-sistemas')
+    .then(response => response.json())
+    .then(data => {
+      const tabla = document.getElementById('tabla-resultados-newton-sistemas').getElementsByTagName('tbody')[0];
+      tabla.innerHTML = '';
+
+      data.forEach(fila => {
+        const nuevaFila = tabla.insertRow();
+
+        // Ejercicio
+        const celdaEjercicio = nuevaFila.insertCell();
+        celdaEjercicio.textContent = fila[0];
+
+        // Iteración
+        const celdaIteracion = nuevaFila.insertCell();
+        celdaIteracion.textContent = fila[1];
+
+        // X
+        // Y
+        const celdaX = nuevaFila.insertCell();
+        celdaX.innerHTML = `
+          ${parseFloat(fila[2]).toFixed(8)}<br>
+          ${parseFloat(fila[3]).toFixed(8)}
+        `;
+        
+
+        // F(x,y)
+        const celdaFx = nuevaFila.insertCell();
+        celdaFx.innerHTML = `
+          ${parseFloat(fila[4]).toFixed(8)}<br>
+          ${parseFloat(fila[5]).toFixed(8)}
+        `;
+        
+
+        // Jacobiano (J11, J12, J21, J22)
+        const celdaJ = nuevaFila.insertCell();
+        celdaJ.innerHTML = `
+          ${parseFloat(fila[6]).toFixed(8)} ${parseFloat(fila[7]).toFixed(8)}<br>
+          ${parseFloat(fila[8]).toFixed(8)} ${parseFloat(fila[9]).toFixed(8)}
+        `;
+        
+
+
+        // Inversa del Jacobiano (invJ11, invJ12, invJ21, invJ22)
+        const celdaInvJ = nuevaFila.insertCell();
+        celdaInvJ.innerHTML = `
+          ${parseFloat(fila[10]).toFixed(8)} ${parseFloat(fila[11]).toFixed(8)}<br>
+          ${parseFloat(fila[12]).toFixed(8)} ${parseFloat(fila[13]).toFixed(8)}
+        `;
+        
+
+        // x y y nuevas
+        const celdaDelta = nuevaFila.insertCell();
+        celdaDelta.innerHTML = `
+          ${parseFloat(fila[14]).toFixed(8)}<br>
+          ${parseFloat(fila[15]).toFixed(8)}
+        `;
+        
+        // e1 y e2
+        const celdaError = nuevaFila.insertCell();
+        celdaError.innerHTML = `
+          ${fila[16] !== 0 ? parseFloat(fila[16]).toFixed(8) : '-'}<br>
+          ${fila[17] !== 0 ? parseFloat(fila[17]).toFixed(8) : '-'}
+        `;
+        
+      });
+    })
+    .catch(error => console.error('Error cargando resultados Newton Sistemas:', error));
+}
+
+
+function eliminarEjercicioNewtonSistemas(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById('ejercicio-newton-sistemas').value;
+
+  if (!ejercicio) {
+    alert('Por favor, ingresa el número de ejercicio a eliminar.');
+    return;
+  }
+
+  fetch(`http://127.0.0.1:5000/eliminar-newton-sistemas/${ejercicio}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);
+      cargarResultadosNewtonSistemas();
+    })
+    .catch(error => console.error('Error al eliminar ejercicio Newton Sistemas:', error));
+}
+
+
+
+
+
+/*Falta arreglar*/
+function actualizarEjercicioNewtonSistemas(event) {
+  event.preventDefault();
+
+  // ✅ Seleccionamos el formulario correcto de Newton-Sistemas
+  const form = document.querySelector('form[action="http://127.0.0.1:5000/newton-sistemas"]');
+  
+  // ✅ Creamos el FormData directamente desde el formulario
+  const formData = new FormData(form);
+
+  // ✅ Enviamos la solicitud POST a /actualizar-newton-sistemas
+  fetch('http://127.0.0.1:5000/actualizar-newton-sistemas', {
+    method: 'POST',
+    body: formData
+  })
+    .then(response => response.text())
+    .then(data => {
+      alert(data);                // ✅ Mostramos el mensaje del servidor
+      cargarResultadosNewtonSistemas(); // ✅ Recargamos la tabla de resultados
+    })
+    .catch(error => {
+      console.error('Error al actualizar ejercicio Newton Sistemas:', error);
+    });
+}
+
+
+
+// 🚀 Cargar resultados automáticamente al abrir la página
+window.addEventListener('load', function () {
+  cargarResultados();         // Bisección
+  cargarResultadosFalsa();    // Falsa Posición
+  cargarResultadosPuntoFijo(); // Punto Fijo
+  cargarResultadosNewton();    // Newton-Raphson
+  cargarResultadosSecante(); // ⬅️ Agregamos esta nueva carga automática
+  cargarResultadosNewtonSistemas();  // 🚀 también cargarlo al abrir la página
+});

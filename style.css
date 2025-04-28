@@ -337,3 +337,25 @@ section {
 .inicio-contenido div:hover {
   transform: translateY(-10px);
 }
+
+
+#tabla-resultados-newton-sistemas {
+  min-width: 900px;
+  margin-top: 10px;
+  padding: 10px;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+#tabla-resultados-newton-sistemas th {
+  background-color: #d6f5d6;
+  font-weight: bold;
+  padding: 10px;
+}
+
+#tabla-resultados-newton-sistemas td {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
