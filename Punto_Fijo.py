@@ -1,7 +1,10 @@
 from flask import Blueprint, request, jsonify
 import math
-import re
 import mysql.connector
+import plotly.graph_objs as go
+import plotly.io as pio
+import numpy as np
+import os
 
 puntofijo_bp = Blueprint('punto_fijo', __name__)
 
@@ -64,8 +67,60 @@ def ejecutar_punto_fijo():
         cursor.close()
         conn.close()
 
-        return "✅ Cálculos de punto fijo realizados y guardados correctamente."
+        try:
+            x_vals = np.linspace(-5, 6, 500)  # Rango amplio como en GeoGebra
+            y_vals = [g(x) for x in x_vals]
 
+            x0 = resultados[0][2]  # xi de la primera iteración
+            gx0 = resultados[0][3]  # gxi de la primera iteración
+
+
+            trazo_funcion = go.Scatter(
+                x=x_vals,
+                y=y_vals,
+                mode='lines',
+                name="g(x) = " + request.form['funcion'],
+                line=dict(color='blue')
+            )
+
+            punto_gx0 = go.Scatter(
+                x=[x0],
+                y=[gx0],
+                mode='markers',
+                name=f"({x0:.4f}, {gx0:.6f})",
+                marker=dict(color='green', size=10)
+            )
+
+            shapes = [
+                dict(type='line', x0=min(x_vals), x1=max(x_vals), y0=0, y1=0,
+                    line=dict(color='black', width=1)),
+                dict(type='line', x0=0, x1=0, y0=min(y_vals), y1=max(y_vals),
+                    line=dict(color='black', width=1))
+            ]
+
+            fig = go.Figure(data=[trazo_funcion, punto_gx0])
+            fig.update_layout(
+                title=f'Método de Punto Fijo - Ejercicio {ejercicio}',
+                xaxis_title='x',
+                yaxis_title='y',
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                shapes=shapes,
+                showlegend=True
+            )
+
+            os.makedirs("static/imagenes", exist_ok=True)
+            html_path = f"static/imagenes/punto_fijo_{ejercicio}.html"
+            pio.write_html(fig, file=html_path, auto_open=False)
+
+        except Exception as err:
+            print("❌ Error generando gráfica:", err)
+            html_path = ""
+
+        return jsonify({
+            "mensaje": "✅ Cálculos de punto fijo realizados y guardados correctamente.",
+            "imagen": "/" + html_path
+        })
     except Exception as e:
         return f"❌ Error: {str(e)}", 500
 
@@ -114,3 +169,26 @@ def actualizar_punto_fijo():
     request.form['ejercicio'] = str(ejercicio)
 
     return ejecutar_punto_fijo()
+
+
+@puntofijo_bp.route('/buscar_ejercicio_puntofijo/<int:ejercicio>', methods=['GET'])
+def buscar_ejercicio_puntofijo(ejercicio):
+    try:
+        conn = mysql.connector.connect(
+            host="localhost", user="root", password="root", database="metodos_numericos")
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT ejercicio, iteracion, xi, gxi, ea
+            FROM metodo_punto_fijo
+            WHERE ejercicio = %s
+            ORDER BY iteracion ASC
+        """, (ejercicio,))
+
+        resultados = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return jsonify(resultados)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

@@ -6,8 +6,7 @@ function toggleSubmenu(id) {
   submenu.style.display = isVisible ? 'none' : 'block';
 }
 
-
-// ✅ Función para cargar los resultados desde el backend
+//Metodo de biseccion//
 function cargarResultados() {
   fetch("http://127.0.0.1:5000/resultados-biseccion")
     .then(response => response.json())
@@ -27,11 +26,56 @@ function cargarResultados() {
     .catch(error => {
       console.error("Error cargando los datos:", error);
     });
+    actualizarSelect();
+
+}
+function buscarPorEjercicio(event) {
+  event.preventDefault(); 
+
+  const ejercicio = document.getElementById("ejercicio").value;
+
+  if (!ejercicio) {
+      alert("Por favor ingrese un número de ejercicio.");
+      return;
+  }
+
+  fetch(`/buscar_ejercicio/${ejercicio}`)
+      .then(response => response.json())
+      .then(data => {
+          const tbody = document.querySelector("#tabla-resultados tbody");
+          tbody.innerHTML = ""; 
+
+          if (data.length === 0) {
+              tbody.innerHTML = "<tr><td colspan='9' style='text-align:center;'>No se encontraron resultados</td></tr>";
+              return;
+          }
+
+          data.forEach(row => {
+              const tr = document.createElement("tr");
+
+              tr.innerHTML = `
+                  <td>${row.ejercicio}</td>
+                  <td>${row.iteracion}</td>
+                  <td>${row.xa}</td>
+                  <td>${row.xb}</td>
+                  <td>${row.fx_xa}</td>
+                  <td>${row.fx_xb}</td>
+                  <td>${row.xr}</td>
+                  <td>${row.fx_xr}</td>
+                  <td>${row.ea}</td>
+              `;
+
+              tbody.appendChild(tr);
+          });
+      })
+      .catch(error => {
+          console.error("Error al buscar el ejercicio:", error);
+      });
 }
 
 // ✅ Se ejecuta todo cuando carga la página
 document.addEventListener("DOMContentLoaded", function () {
-  cargarResultados(); // 👈 Se carga la tabla al iniciar
+  cargarResultados();
 
   const form = document.querySelector("form");
   form.addEventListener("submit", function (event) {
@@ -42,14 +86,21 @@ document.addEventListener("DOMContentLoaded", function () {
       method: "POST",
       body: formData
     })
-      .then(response => response.text())
-      .then(msg => {
-        console.log("Servidor:", msg);
-        cargarResultados(); // 👈 Se actualiza la tabla después del cálculo
-      })
+    .then(response => response.json())
+    .then(data => {
+      console.log("Servidor:", data.mensaje);
+      cargarResultados();
+      actualizarSelect();
+
+      const img = document.getElementById("grafica-biseccion");
+      img.src = data.imagen + "?" + new Date().getTime(); 
+      img.style.display = "block";s
+    })
+    
       .catch(error => {
         console.error("Error al enviar los datos:", error);
       });
+
   });
 });
 
@@ -72,7 +123,8 @@ function eliminarEjercicio() {
     .then(response => response.text())
     .then(msg => {
       alert(msg);
-      cargarResultados(); // actualiza tabla
+      cargarResultados(); 
+      actualizarSelect();
     })
     .catch(error => {
       console.error("Error al eliminar:", error);
@@ -91,14 +143,42 @@ function actualizarEjercicio() {
     .then(response => response.text())
     .then(data => {
       console.log("✅ Actualización completada");
-      cargarResultados(); // ⬅️ recarga la tabla
+      cargarResultados(); 
+      actualizarSelect();
+
     })
     .catch(error => {
       console.error("❌ Error al actualizar:", error);
     });
 }
 
-// FUNCIONES PARA FALSA POSICION
+
+function actualizarSelect() {
+  fetch('/resultados-biseccion')
+    .then(res => res.json())
+    .then(data => {
+      const ejerciciosUnicos = [...new Set(data.map(row => row[0]))]; 
+      const select = document.getElementById('ejercicioSelect');
+      select.innerHTML = '';
+
+      ejerciciosUnicos.forEach(ej => {
+        const option = document.createElement('option');
+        option.value = ej;
+        option.textContent = `Ejercicio ${ej}`;
+        select.appendChild(option);
+      });
+
+      if (ejerciciosUnicos.length > 0) {
+        select.value = ejerciciosUnicos[ejerciciosUnicos.length - 1]; 
+        cargarGrafica();
+        
+      }
+    });
+}
+
+
+
+// Metodo de FALSA POSICION
 
 function cargarResultadosFalsa() {
   fetch('http://127.0.0.1:5000/resultados-falsa-posicion')
@@ -116,8 +196,8 @@ function cargarResultadosFalsa() {
       });
     })
     .catch(error => console.error('Error cargando resultados:', error));
-}
-
+    actualizarSelectFalsa();   
+  }
 function eliminarEjercicioFalsa(event) {
   event.preventDefault();
   const ejercicio = document.getElementById('ejercicio-falsa').value;
@@ -134,6 +214,7 @@ function eliminarEjercicioFalsa(event) {
     .then(data => {
       alert(data);
       cargarResultadosFalsa();
+      actualizarSelectFalsa();     
     })
     .catch(error => console.error('Error al eliminar ejercicio:', error));
 }
@@ -155,10 +236,70 @@ function actualizarEjercicioFalsa(event) {
     .then(data => {
       alert(data);
       cargarResultadosFalsa();
+      actualizarSelectFalsa();     
     })
     .catch(error => console.error('Error al actualizar ejercicio:', error));
 }
-// 🔥 NUEVO: FORMULARIO FALSA POSICIÓN
+function buscarPorEjercicioFalsa(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById("ejercicio-falsa").value;
+
+  if (!ejercicio) {
+    alert("Por favor, ingrese un número de ejercicio.");
+    return;
+  }
+
+  fetch(`/buscar_ejercicio_falsa/${ejercicio}`)
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.querySelector("#tabla-resultados-falsa tbody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='9' style='text-align:center;'>No se encontraron resultados</td></tr>";
+        return;
+      }
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.ejercicio}</td>
+          <td>${row.iteracion}</td>
+          <td>${row.xa}</td>
+          <td>${row.xb}</td>
+          <td>${row.fxa}</td>
+          <td>${row.fxb}</td>
+          <td>${row.xr}</td>
+          <td>${row.fxr}</td>
+          <td>${row.ea}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+}
+
+function actualizarSelectFalsa() {
+  fetch('/resultados-falsa-posicion')
+    .then(res => res.json())
+    .then(data => {
+      const ejerciciosUnicos = [...new Set(data.map(row => row[0]))]; 
+      const select = document.getElementById('ejercicioSelectFalsa');
+      select.innerHTML = '';
+
+      ejerciciosUnicos.forEach(ej => {
+        const option = document.createElement('option');
+        option.value = ej;
+        option.textContent = `Ejercicio ${ej}`;
+        select.appendChild(option);
+      });
+
+      if (ejerciciosUnicos.length > 0) {
+        select.value = ejerciciosUnicos[ejerciciosUnicos.length - 1];
+        cargarGraficaFalsa();
+        
+      }
+    });
+}
 const formFalsa = document.querySelector('form[action="http://127.0.0.1:5000/falsa-posicion"]');
 formFalsa.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -171,14 +312,22 @@ formFalsa.addEventListener("submit", function (event) {
     .then(response => response.text())
     .then(msg => {
       console.log("Servidor (Falsa):", msg);
-      cargarResultadosFalsa(); // 👈 actualizar tabla
+      cargarResultadosFalsa(); 
+      actualizarSelectFalsa();    
     })
     .catch(error => {
       console.error("Error Falsa Posición:", error);
     });
 });
 
-// FUNCIONES PARA PUNTO FIJO
+
+
+
+
+
+
+
+// Metodo de PUNTO FIJO
 
 function cargarResultadosPuntoFijo() {
   fetch('http://127.0.0.1:5000/resultados-punto-fijo')
@@ -196,6 +345,7 @@ function cargarResultadosPuntoFijo() {
       });
     })
     .catch(error => console.error('Error cargando resultados Punto Fijo:', error));
+    actualizarSelectPuntoFijo(); // después de cargarResultadosPuntoFijo()
 }
 
 function eliminarEjercicioPuntoFijo(event) {
@@ -214,6 +364,7 @@ function eliminarEjercicioPuntoFijo(event) {
     .then(data => {
       alert(data);
       cargarResultadosPuntoFijo();
+      actualizarSelectPuntoFijo(); // después de cargarResultadosPuntoFijo()
     })
     .catch(error => console.error('Error al eliminar ejercicio Punto Fijo:', error));
 }
@@ -234,11 +385,10 @@ function actualizarEjercicioPuntoFijo(event) {
     .then(data => {
       alert(data);
       cargarResultadosPuntoFijo();
+      actualizarSelectPuntoFijo(); // después de cargarResultadosPuntoFijo()
     })
     .catch(error => console.error('Error al actualizar ejercicio Punto Fijo:', error));
 }
-
-// 🔥 FORMULARIO PUNTO FIJO
 const formPuntoFijo = document.querySelector('form[action="http://127.0.0.1:5000/punto-fijo"]');
 formPuntoFijo.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -252,11 +402,82 @@ formPuntoFijo.addEventListener("submit", function (event) {
     .then(msg => {
       console.log("Servidor (Punto Fijo):", msg);
       cargarResultadosPuntoFijo(); // 👈 actualizar tabla
+      actualizarSelectPuntoFijo(); // ⬅️ actualiza combo y gráfica
     })
     .catch(error => {
       console.error("Error Punto Fijo:", error);
     });
 });
+
+function actualizarSelectPuntoFijo() {
+  fetch('/resultados-punto-fijo')
+    .then(res => res.json())
+    .then(data => {
+      const ejerciciosUnicos = [...new Set(data.map(row => row[0]))];
+      const select = document.getElementById('ejercicioSelectPuntoFijo');
+      select.innerHTML = '';
+
+      ejerciciosUnicos.forEach(ej => {
+        const option = document.createElement('option');
+        option.value = ej;
+        option.textContent = `Ejercicio ${ej}`;
+        select.appendChild(option);
+      });
+
+      if (ejerciciosUnicos.length > 0) {
+        select.value = ejerciciosUnicos[ejerciciosUnicos.length - 1]; // Último
+        cargarGraficaPuntoFijo();
+      }
+    });
+}
+function cargarGraficaPuntoFijo() {
+  const ejercicio = document.getElementById('ejercicioSelectPuntoFijo').value;
+  document.getElementById('grafica-interactiva-puntofijo').src = `/static/imagenes/punto_fijo_${ejercicio}.html?t=${Date.now()}`;
+}
+function buscarPorEjercicioPuntoFijo(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById("ejercicio-puntofijo").value;
+
+  if (!ejercicio) {
+    alert("Por favor, ingrese un número de ejercicio.");
+    return;
+  }
+
+  fetch(`/buscar_ejercicio_puntofijo/${ejercicio}`)
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.querySelector("#tabla-resultados-puntofijo tbody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='5' style='text-align:center;'>No se encontraron resultados</td></tr>";
+        return;
+      }
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.ejercicio}</td>
+          <td>${row.iteracion}</td>
+          <td>${row.xi}</td>
+          <td>${row.gxi}</td>
+          <td>${row.ea}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(error => {
+      console.error("Error al buscar ejercicio Punto Fijo:", error);
+    });
+}
+
+
+
+
+
+
+
+
 // FUNCIONES PARA NEWTON-RAPHSON
 
 function cargarResultadosNewton() {
@@ -338,6 +559,9 @@ formNewton.addEventListener("submit", function (event) {
     });
 });
 
+
+
+
 // FUNCIONES PARA SECANTE
 
 function cargarResultadosSecante() {
@@ -356,6 +580,7 @@ function cargarResultadosSecante() {
       });
     })
     .catch(error => console.error('Error cargando resultados Secante:', error));
+    actualizarSelectSecante();
 }
 
 function eliminarEjercicioSecante(event) {
@@ -374,6 +599,7 @@ function eliminarEjercicioSecante(event) {
     .then(data => {
       alert(data);
       cargarResultadosSecante();
+      actualizarSelectSecante();
     })
     .catch(error => console.error('Error al eliminar ejercicio Secante:', error));
 }
@@ -395,11 +621,11 @@ function actualizarEjercicioSecante(event) {
     .then(data => {
       alert(data);
       cargarResultadosSecante();
+      actualizarSelectSecante();
     })
     .catch(error => console.error('Error al actualizar ejercicio Secante:', error));
 }
 
-// 🔥 FORMULARIO SECANTE
 const formSecante = document.querySelector('form[action="http://127.0.0.1:5000/secante"]');
 formSecante.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -413,11 +639,87 @@ formSecante.addEventListener("submit", function (event) {
     .then(msg => {
       console.log("Servidor (Secante):", msg);
       cargarResultadosSecante(); // 👈 actualizar tabla
+      actualizarSelectSecante();
     })
     .catch(error => {
       console.error("Error Secante:", error);
     });
 });
+function actualizarSelectSecante() {
+  fetch('/resultados-secante')
+    .then(res => res.json())
+    .then(data => {
+      const ejerciciosUnicos = [...new Set(data.map(row => row[0]))];
+      const select = document.getElementById('ejercicioSelectSecante');
+      select.innerHTML = '';
+
+      ejerciciosUnicos.forEach(ej => {
+        const option = document.createElement('option');
+        option.value = ej;
+        option.textContent = `Ejercicio ${ej}`;
+        select.appendChild(option);
+      });
+
+      if (ejerciciosUnicos.length > 0) {
+        select.value = ejerciciosUnicos[ejerciciosUnicos.length - 1];
+        cargarGraficaSecante();
+      }
+    });
+}
+
+function cargarGraficaSecante() {
+  const ejercicio = document.getElementById('ejercicioSelectSecante').value;
+  document.getElementById('grafica-interactiva-secante').src = `/static/imagenes/secante_${ejercicio}.html?t=${Date.now()}`;
+}
+
+function buscarPorEjercicioSecante(event) {
+  event.preventDefault();
+  const ejercicio = document.getElementById("ejercicio-secante").value;
+
+  if (!ejercicio) {
+    alert("Por favor, ingrese un número de ejercicio.");
+    return;
+  }
+
+  fetch(`/buscar_ejercicio_secante/${ejercicio}`)
+    .then(response => response.json())
+    .then(data => {
+      const tbody = document.querySelector("#tabla-resultados-secante tbody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='8' style='text-align:center;'>No se encontraron resultados</td></tr>";
+        return;
+      }
+
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${row.ejercicio}</td>
+          <td>${row.iteracion}</td>
+          <td>${row.xi_1}</td>
+          <td>${row.xi}</td>
+          <td>${row.fxi_1}</td>
+          <td>${row.fxi}</td>
+          <td>${row.xi_t}</td>
+          <td>${row.ea}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    })
+    .catch(error => {
+      console.error("Error al buscar ejercicio Secante:", error);
+    });
+}
+
+
+
+
+
+
+
+
+
 
 //Exportacion a Excel//
 function exportarTabla(idTabla, nombreArchivo, nombreHoja) {
@@ -438,7 +740,9 @@ function exportarTodo() {
     { id: 'tabla-resultados-falsa', nombre: 'FalsaPosicion' },
     { id: 'tabla-resultados-puntofijo', nombre: 'PuntoFijo' },
     { id: 'tabla-resultados-newton', nombre: 'NewtonRaphson' },
-    { id: 'tabla-resultados-secante', nombre: 'Secante' }
+    { id: 'tabla-resultados-secante', nombre: 'Secante' },
+    { id: 'tabla-resultados-newton-sistemas', nombre: 'NR SENL' }
+
   ];
 
   // Recorrer cada tabla y agregarla como hoja
@@ -453,13 +757,6 @@ function exportarTodo() {
   // Guardar el archivo
   XLSX.writeFile(wb, 'metodos_numericos_completo.xlsx');
 }
-
-
-
-
-
-
-
 function cargarResultadosNewtonSistemas() {
   fetch('http://127.0.0.1:5000/resultados-newton-sistemas')
     .then(response => response.json())
@@ -583,6 +880,60 @@ function actualizarEjercicioNewtonSistemas(event) {
 
 
 
+
+
+// Cargar lista de ejercicios al iniciar
+window.onload = () => {
+  fetch('/resultados-biseccion')
+      .then(res => res.json())
+      .then(data => {
+          const ejerciciosUnicos = [...new Set(data.map(row => row[0]))]; // row[0] = ejercicio
+          const select = document.getElementById('ejercicioSelect');
+          ejerciciosUnicos.forEach(ej => {
+              const option = document.createElement('option');
+              option.value = ej;
+              option.textContent = `Ejercicio ${ej}`;
+              select.appendChild(option);
+          });
+
+          if (ejerciciosUnicos.length > 0) {
+              select.value = ejerciciosUnicos[0];
+              cargarGrafica();
+          }
+      });
+};
+
+// Cargar la gráfica al cambiar de ejercicio
+function cargarGrafica() {
+  const ejercicio = document.getElementById('ejercicioSelect').value;
+  document.getElementById('grafica-interactiva').src = `/static/imagenes/biseccion_${ejercicio}.html?t=${Date.now()}`;
+}
+
+window.addEventListener('load', () => {
+  fetch('/resultados-falsa-posicion')
+    .then(res => res.json())
+    .then(data => {
+      const ejerciciosUnicos = [...new Set(data.map(row => row[0]))]; // row[0] = ejercicio
+      const select = document.getElementById('ejercicioSelectFalsa');
+      ejerciciosUnicos.forEach(ej => {
+        const option = document.createElement('option');
+        option.value = ej;
+        option.textContent = `Ejercicio ${ej}`;
+        select.appendChild(option);
+      });
+
+      if (ejerciciosUnicos.length > 0) {
+        select.value = ejerciciosUnicos[0];
+        cargarGraficaFalsa();
+      }
+    });
+});
+
+function cargarGraficaFalsa() {
+  const ejercicio = document.getElementById('ejercicioSelectFalsa').value;
+  document.getElementById('grafica-interactiva-falsa').src = `/static/imagenes/falsa_posicion_${ejercicio}.html?t=${Date.now()}`;
+}
+
 // 🚀 Cargar resultados automáticamente al abrir la página
 window.addEventListener('load', function () {
   cargarResultados();         // Bisección
@@ -592,3 +943,5 @@ window.addEventListener('load', function () {
   cargarResultadosSecante(); // ⬅️ Agregamos esta nueva carga automática
   cargarResultadosNewtonSistemas();  // 🚀 también cargarlo al abrir la página
 });
+
+

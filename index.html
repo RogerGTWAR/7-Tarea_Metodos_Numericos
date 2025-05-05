@@ -5,9 +5,10 @@
   <link rel="icon" href="https://images.vexels.com/media/users/3/135555/isolated/preview/b45edb6f6eee6d71bcc54eb911e54f3b-icono-de-numeros-de-calculadora.png" type="image/png">
   <title>Métodos Numéricos</title>
   <link rel="stylesheet" href="style.css">
-</head>
-<body>
 
+  
+</head>
+<body>  
     <div class="sidebar">
         <div class="logo">Menu</div>
       
@@ -132,7 +133,6 @@
          onmouseout="this.style.backgroundColor='#004d40'; this.style.transform='scale(1)';">
         🚀 ¡Explora los métodos ahora!
       </a>
-  
     </div>
   </section>
   
@@ -169,9 +169,11 @@
         </div>
       </div>
       <div class="botones-biseccion">
+        <button type="button" onclick="buscarPorEjercicio(event)">🔍 Buscar</button>
         <button onclick="eliminarEjercicio(event)">🗑️ Eliminar</button>
-        <button type="submit">Calcular</button>
+        <button type="submit">🧮 Calcular</button>
         <button onclick="actualizarEjercicio(event)">🔄 Actualizar</button>
+        
       </div>
       
     </form>
@@ -217,9 +219,23 @@
       </div>
       
     </div>
-
+    <div style="text-align: center; margin-top: 30px;">
+      <img id="grafica-biseccion" src="" alt="Gráfica del método de bisección"
+           style="max-width: 100%; height: auto; border: 2px solid #ccc; padding: 10px; display: none;">
+    </div>
+    <div class="grafica-container">
+      <h2>Gráfica del Método de Bisección</h2>
+      <div class="selector">
+        <label for="ejercicioSelect">Seleccionar ejercicio:</label>
+        <select id="ejercicioSelect" onchange="cargarGrafica()">
+        </select>
+      </div>
+      <iframe id="grafica-interactiva" src="/static/imagenes/biseccion.html"></iframe>
+    </div>
+    
   </section>
-  
+
+
 
 
   <section id="falsa" class="falsa-scroll-section">
@@ -252,6 +268,7 @@
           </div>
         </div>
         <div class="botones-biseccion">
+          <button type="button" onclick="buscarPorEjercicioFalsa(event)">🔍 Buscar</button>
           <button onclick="eliminarEjercicioFalsa(event)">🗑️ Eliminar</button>
           <button type="submit">Calcular</button>
           <button onclick="actualizarEjercicioFalsa(event)">🔄 Actualizar</button>
@@ -290,6 +307,14 @@
         </div>
         
       </div>
+      <div class="grafica-container">
+        <h2>Gráfica del Método de Falsa Posición</h2>
+        <div class="selector">
+          <label for="ejercicioSelectFalsa">Seleccionar ejercicio:</label>
+          <select id="ejercicioSelectFalsa" onchange="cargarGraficaFalsa()"></select>
+        </div>
+        <iframe id="grafica-interactiva-falsa" style="width:100%; height:500px; border:none;"></iframe>
+      </div>
     </div>
   </section>
   
@@ -321,6 +346,7 @@
           </div>
         </div>
         <div class="botones-biseccion">
+          <button type="button" onclick="buscarPorEjercicioPuntoFijo(event)">🔍 Buscar</button>
           <button onclick="eliminarEjercicioPuntoFijo(event)">🗑️ Eliminar</button>
           <button type="submit">Calcular</button>
           <button onclick="actualizarEjercicioPuntoFijo(event)">🔄 Actualizar</button>
@@ -358,6 +384,15 @@
             <canvas id="grafica-biseccion"></canvas>
           </div>
       </div>
+      <div class="grafica-container">
+        <h2>Gráfica del Método de Punto Fijo</h2>
+        <div class="selector">
+          <label for="ejercicioSelectPuntoFijo">Seleccionar ejercicio:</label>
+          <select id="ejercicioSelectPuntoFijo" onchange="cargarGraficaPuntoFijo()"></select>
+        </div>
+        <iframe id="grafica-interactiva-puntofijo" src=""></iframe>
+      </div>
+      
     </div>
   </section>
   
@@ -451,11 +486,11 @@
             <input type="text" id="funcion-secante" name="funcion">
           </div>
           <div class="form-group">
-            <label for="x0-secante">X<sub>i-1</sub></label>
+            <label for="x0-secante">X<sub>i</sub></label>
             <input type="text" id="x0-secante" name="x0">
           </div>
           <div class="form-group">
-            <label for="x1-secante">X<sub>i</sub></label>
+            <label for="x1-secante">X<sub>i-1</sub></label>
             <input type="text" id="x1-secante" name="x1">
           </div>
           <div class="form-group">
@@ -464,6 +499,7 @@
           </div>
         </div>
         <div class="botones-biseccion">
+          <button type="button" onclick="buscarPorEjercicioSecante(event)">🔍 Buscar</button>
           <button onclick="eliminarEjercicioSecante(event)">🗑️ Eliminar</button>
           <button type="submit">Calcular</button>
           <button onclick="actualizarEjercicioSecante(event)">🔄 Actualizar</button>
@@ -478,10 +514,10 @@
               <tr>
                 <th>Ejercicio</th>
                 <th>Iteración</th>
-                <th>X<sub>i-1</sub></th>
                 <th>X<sub>i</sub></th>
-                <th>f(X<sub>i-1</sub>)</th>
+                <th>X<sub>i-1</sub></th>
                 <th>f(X<sub>i</sub>)</th>
+                <th>f(X<sub>i-1</sub>)</th>
                 <th>X<sub>i+1</sub></th>
                 <th>Ea (%)</th>
               </tr>
@@ -501,6 +537,15 @@
         </div>
         
       </div>
+      <div class="grafica-container">
+        <h2>Gráfica del Método de la Secante</h2>
+        <div class="selector">
+          <label for="ejercicioSelectSecante">Seleccionar ejercicio:</label>
+          <select id="ejercicioSelectSecante" onchange="cargarGraficaSecante()"></select>
+        </div>
+        <iframe id="grafica-interactiva-secante" style="width:100%; height:500px; border:none;"></iframe>
+      </div>
+      
     </div>
   </section>
   
@@ -605,7 +650,6 @@
             📄 Exportar a Excel
           </button>
         </div>
-  
       </div>
     </div>
   </section>
@@ -626,7 +670,7 @@
   
       <!-- Texto inicial -->
       <p style="font-size: 20px; max-width: 850px; margin: 0 auto; color: #444; line-height: 1.8;">
-        Esta plataforma se sigue actualizando constantemente para incluir más métodos numéricos, ejercicios prácticos interactivos y nuevas herramientas que te ayuden a mejorar tu comprensión y habilidades.
+        Esta plataforma ha sido desarrolada por fines educativos. 
       </p>
       <p style="font-size: 20px; max-width: 850px; margin: 30px auto 40px; color: #444; line-height: 1.8;">
         En este proyecto pusimos en práctica diferentes métodos numéricos como Bisección, Falsa Posición, Punto Fijo, Newton-Raphson, Secante y también Newton-Raphson para sistemas de ecuaciones no lineales.
@@ -635,13 +679,9 @@
         Cada método fue trabajado con su propio formulario, su tabla de resultados y una explicación clara. Además, fuimos mejorando el diseño del sitio web para que todo fuera más ordenado, fácil de usar y visualmente agradable.
       </p>
       <p style="font-size: 20px; max-width: 850px; margin: 30px auto 40px; color: #444; line-height: 1.8;">
-        Estoy muy satisfecho con el resultado, porque no solo aprendimos a aplicar los métodos, sino también a organizar mejor la información usando distintas herramientas.  
+        Este portar ha sido un gran esfuerzo, porque no solo aprendimos a aplicar los métodos, sino también a organizar mejor la información usando distintas herramientas.  
 
-      </p >
-      <p style="font-size: 20px; max-width: 850px; margin: 30px auto 40px; color: #444; line-height: 1.8;">
-        🚀 ¡Sigue explorando, aprendiendo y practicando! Muy pronto tendrás acceso a más módulos avanzados como métodos iterativos para sistemas lineales, integración numérica y optimización.
-      </p>
-  
+      </p >  
 
             <div style="background-color: #e0f7fa; margin-top: 50px; padding: 30px; border-radius: 12px; max-width: 850px; margin-left: auto; margin-right: auto; transition: transform 0.3s; text-align: center;"
             onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
@@ -725,11 +765,30 @@
             onmouseout="this.style.transform='scale(1)'">
           Math
         </div>
+        <!-- Plotly -->
+        <div style="background-color: #ff7043; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; gap: 8px; transition: transform 0.3s;"
+            onmouseover="this.style.transform='scale(1.05)'" 
+            onmouseout="this.style.transform='scale(1)'">
+          Plotly
+        </div>
 
+        <!-- NumPy -->
+        <div style="background-color: #1976d2; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; gap: 8px; transition: transform 0.3s;"
+            onmouseover="this.style.transform='scale(1.05)'" 
+            onmouseout="this.style.transform='scale(1)'">
+          NumPy
+        </div>
+
+        <!-- OS -->
+        <div style="background-color: #6d4c41; color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 16px; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; gap: 8px; transition: transform 0.3s;"
+            onmouseover="this.style.transform='scale(1.05)'" 
+            onmouseout="this.style.transform='scale(1)'">
+          OS
+        </div>
       </div>
 
 
-       <!-- NUEVA SECCIÓN: Software y Herramientas -->
+       <!-- Software y Herramientas -->
       <h2 style="color: #00bcd4; font-weight: bold; margin: 50px 0 20px; font-family: 'Segoe UI', sans-serif; font-size: 26px; text-align: center;">
         SOFTWARE Y HERRAMIENTAS
       </h2>
@@ -764,10 +823,6 @@
   </p>
 
 </footer>
-
-</div>
-
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="Funciones.js"></script>

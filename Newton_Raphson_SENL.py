@@ -28,14 +28,14 @@ def ejecutar_newton_sistemas():
         funciones = [aplicar_reemplazos(f) for f in funciones_input]
         jacobiano = [aplicar_reemplazos(j) for j in jacobiano_input]
 
-        n = 2  # 2 ecuaciones
+        n = 2 
 
         allowed_names = {name: getattr(math, name) for name in dir(math) if not name.startswith("__")}
 
         def evaluar_funciones(x):
             resultado = []
             for f in funciones:
-                contexto = allowed_names.copy()  # 👈 hacemos una copia fresca
+                contexto = allowed_names.copy() 
                 contexto.update({"x": x[0], "y": x[1]})
                 try:
                     resultado.append(eval(f, {"__builtins__": None}, contexto))
@@ -96,12 +96,10 @@ def ejecutar_newton_sistemas():
                 i += 1
 
             except ValueError as e:
-        # ⚡ Captura elegante del error de dominio
              return f"❌ Error de dominio durante la iteración {i}: {str(e)}", 400
 
 
 
-        # Guardar en base de datos
         conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
         cursor = conn.cursor()
         cursor.execute("DELETE FROM metodo_newton_sistemas WHERE ejercicio = %s", (ejercicio,))
