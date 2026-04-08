@@ -62,11 +62,3 @@ http://127.0.0.1:5000
 * Newton-Raphson
 * Secante
 * Métodos numéricos avanzados (Euler, Heun, Runge-Kutta, etc.)
-
----
-
-## Notas
-
-* Este proyecto utiliza Flask como servidor web
-* El servidor es de desarrollo, no para producción
-* Asegúrate de tener correctamente configuradas las rutas de archivos estáticos
