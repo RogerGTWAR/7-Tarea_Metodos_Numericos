@@ -79,8 +79,6 @@ def ejecutar_biseccion():
         conn.commit()
         cursor.close()
         conn.close()
-       # 📈 Gráfica estilo GeoGebra con eje manual
-
 
         try:  
             
@@ -122,10 +120,8 @@ def ejecutar_biseccion():
                     zerolinewidth=2
                 ),
                 shapes=[
-                    # Línea vertical en x = 0
                     dict(type='line', x0=0, y0=-1000, x1=0, y1=1000,
                         line=dict(color='black', width=2)),
-                    # Línea horizontal en y = 0
                     dict(type='line', x0=-1000, y0=0, x1=1000, y1=0,
                         line=dict(color='black', width=2))
                 ],
@@ -142,17 +138,17 @@ def ejecutar_biseccion():
             pio.write_html(fig, file=html_path, auto_open=False)
 
         except Exception as err:
-            print("❌ Error generando gráfica:", err)
+            print("Error generando gráfica:", err)
             html_path = ""
 
 
         return jsonify({
-            "mensaje": "✅ Bisección guardada correctamente.",
+            "mensaje": "Bisección guardada correctamente.",
             "imagen": "/" + html_path
         })
 
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
+        return f"Error: {str(e)}", 500
 
 
 @biseccion_bp.route('/resultados-biseccion')
@@ -171,28 +167,28 @@ def resultados_biseccion():
         return jsonify(filas)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
 @biseccion_bp.route('/eliminar-biseccion/<int:ejercicio>', methods=['DELETE'])
 def eliminar_biseccion(ejercicio):
     try:
         conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
         cursor = conn.cursor()
         
-        # Elimina todas las filas que pertenezcan a ese ejercicio
         cursor.execute("DELETE FROM metodo_biseccion WHERE ejercicio = %s", (ejercicio,))
         
         conn.commit()
         cursor.close()
         conn.close()
 
-        return "✅ Ejercicio eliminado correctamente."
+        return "Ejercicio eliminado correctamente."
     except Exception as e:
-        return f"❌ Error al eliminar: {str(e)}", 500
+        return f"Error al eliminar: {str(e)}", 500
+    
 @biseccion_bp.route('/actualizar-biseccion', methods=['POST'])
 def actualizar_biseccion():
     try:
         ejercicio = int(request.form['ejercicio'])
 
-        # Elimina registros antiguos
         conn = mysql.connector.connect(host="localhost", user="root", password="root", database="metodos_numericos")
         cursor = conn.cursor()
         cursor.execute("DELETE FROM metodo_biseccion WHERE ejercicio = %s", (ejercicio,))
@@ -207,10 +203,7 @@ def actualizar_biseccion():
         return ejecutar_biseccion()
 
     except Exception as e:
-        return f"❌ Error al actualizar: {str(e)}", 500
-
-
-
+        return f"Error al actualizar: {str(e)}", 500
 
 
 @biseccion_bp.route('/buscar_ejercicio/<int:ejercicio>', methods=['GET'])

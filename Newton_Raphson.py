@@ -78,10 +78,10 @@ def ejecutar_newton_raphson():
         cursor.close()
         conn.close()
 
-        return "✅ Cálculos de Newton-Raphson realizados y guardados correctamente."
+        return "Cálculos de Newton-Raphson realizados y guardados correctamente."
 
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
+        return f"Error: {str(e)}", 500
 
 
 @newton_bp.route('/resultados-newton-raphson')
@@ -111,9 +111,9 @@ def eliminar_newton_raphson(ejercicio):
         conn.commit()
         cursor.close()
         conn.close()
-        return f"✅ Registros del ejercicio #{ejercicio} eliminados correctamente."
+        return f"Registros del ejercicio #{ejercicio} eliminados correctamente."
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
+        return f"Error: {str(e)}", 500
 
 
 @newton_bp.route('/actualizar-newton-raphson', methods=['POST'])

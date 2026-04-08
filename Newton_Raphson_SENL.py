@@ -10,9 +10,9 @@ def ejecutar_newton_sistemas():
     try:
         funciones_input = request.form.getlist('vector_funciones')
         jacobiano_input = request.form.getlist('jacobiano')
-        x_inicial = float(request.form['x_inicial'])  # ✅ captura x inicial
-        y_inicial = float(request.form['y_inicial'])  # ✅ captura y inicial
-        x = np.array([x_inicial, y_inicial], dtype=float)  # ✅ arma el vector [x, y]
+        x_inicial = float(request.form['x_inicial'])  
+        y_inicial = float(request.form['y_inicial'])  
+        x = np.array([x_inicial, y_inicial], dtype=float)  
         es = float(request.form['es'])
         ejercicio = int(request.form['ejercicio'])
         max_iter = 100
@@ -66,7 +66,7 @@ def ejecutar_newton_sistemas():
                 J = evaluar_jacobiano(x)
 
                 if np.linalg.det(J) == 0:
-                    return "❌ Error: Jacobiano singular, no se puede invertir.", 400
+                    return "Error: Jacobiano singular, no se puede invertir.", 400
 
                 J_inv = np.linalg.inv(J)
                 delta = np.dot(J_inv, F)
@@ -96,7 +96,7 @@ def ejecutar_newton_sistemas():
                 i += 1
 
             except ValueError as e:
-             return f"❌ Error de dominio durante la iteración {i}: {str(e)}", 400
+             return f"Error de dominio durante la iteración {i}: {str(e)}", 400
 
 
 
@@ -117,10 +117,10 @@ def ejecutar_newton_sistemas():
         cursor.close()
         conn.close()
 
-        return "✅ Cálculos Newton Sistemas guardados correctamente."
+        return "Cálculos Newton Sistemas guardados correctamente."
 
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
+        return f"Error: {str(e)}", 500
 
 @newton_sistemas_bp.route('/resultados-newton-sistemas')
 def resultados_newton_sistemas():
@@ -151,9 +151,9 @@ def eliminar_newton_sistemas(ejercicio):
         conn.commit()
         cursor.close()
         conn.close()
-        return f"✅ Registros del ejercicio #{ejercicio} eliminados correctamente."
+        return f"Registros del ejercicio #{ejercicio} eliminados correctamente."
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
+        return f"Error: {str(e)}", 500
 
 @newton_sistemas_bp.route('/actualizar-newton-sistemas', methods=['POST'])
 def actualizar_newton_sistemas():
@@ -208,7 +208,7 @@ def actualizar_newton_sistemas():
             J = evaluar_jacobiano(x)
 
             if np.linalg.det(J) == 0:
-                return "❌ Error: Jacobiano singular, no se puede invertir.", 400
+                return "Error: Jacobiano singular, no se puede invertir.", 400
 
             J_inv = np.linalg.inv(J)
             delta = np.dot(J_inv, F)
@@ -249,7 +249,7 @@ def actualizar_newton_sistemas():
         cursor.close()
         conn.close()
 
-        return "✅ Actualización Newton Sistemas exitosa."
+        return "Actualización Newton Sistemas exitosa."
 
     except Exception as e:
-        return f"❌ Error al actualizar: {str(e)}", 500
+        return f"Error al actualizar: {str(e)}", 500

@@ -82,18 +82,14 @@ def ejecutar_secante():
         cursor.close()
         conn.close()
  
-# 📈 Gráfica estilo GeoGebra para la Secante
         try:
-            # Guardamos los valores iniciales para graficar después
             x0_original = float(request.form['x0'])
             x1_original = float(request.form['x1'])
 
-            # Calculamos x2 SOLO UNA VEZ como en GeoGebra
             f_x0 = f(x0_original)
             f_x1 = f(x1_original)
             x2_geo = x1_original - f_x1 * (x1_original - x0_original) / (f_x1 - f_x0)
 
-            # Rango amplio y fijo para visualizar toda la forma de la función
             x_vals = np.linspace(-2000, 2000, 20000)
             x_vals_filtrados = []
             y_vals_filtrados = []
@@ -101,7 +97,6 @@ def ejecutar_secante():
             for x in x_vals:
                 try:
                     y = f(x)
-                    # Solo agregamos puntos cuando el denominador no da error
                     if math.isfinite(y):
                         x_vals_filtrados.append(x)
                         y_vals_filtrados.append(y)
@@ -109,7 +104,6 @@ def ejecutar_secante():
                         x_vals_filtrados.append(x)
                         y_vals_filtrados.append(None)
                 except Exception:
-                    # En caso de división por cero o cualquier error
                     x_vals_filtrados.append(x)
                     y_vals_filtrados.append(None)
 
@@ -122,7 +116,6 @@ def ejecutar_secante():
                 line=dict(color='blue')
             )
 
-            # Graficar función y los puntos A, B, C
             trace_func = go.Scatter(x=x_vals_filtrados, y=y_vals_filtrados, mode='lines', name=f"f(x) = {funcion}", line=dict(color='blue'))
             trace_A = go.Scatter(x=[x1_original], y=[f(x1_original)], mode='markers',
                                 name=f"A = ({x1_original:.2f}, {f(x1_original):.3f})",
@@ -173,16 +166,16 @@ def ejecutar_secante():
             pio.write_html(fig, file=html_path, auto_open=False)
 
         except Exception as err:
-            print("❌ Error generando gráfica Secante:", err)
+            print("Error generando gráfica Secante:", err)
             html_path = ""
 
 
 
     except Exception as err:
-        print("❌ Error generando gráfica de la secante:", err)
+        print("Error generando gráfica de la secante:", err)
 
     return jsonify({
-        "mensaje": "✅ Cálculos de la secante realizados y guardados correctamente.",
+        "mensaje": "Cálculos de la secante realizados y guardados correctamente.",
         "imagen": "/" + html_path
     })
 
@@ -216,7 +209,7 @@ def eliminar_secante(ejercicio):
         conn.close()
         return f"Registros del ejercicio #{ejercicio} eliminados correctamente."
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
+        return f"Error: {str(e)}", 500
 
 @secante_bp.route('/actualizar-secante', methods=['POST'])
 def actualizar_secante():

@@ -2,7 +2,6 @@ function toggleSubmenu(id) {
   const submenu = document.getElementById(id);
   const isVisible = submenu.style.display === 'block';
 
-  // No cerramos los demás, solo alternamos este
   submenu.style.display = isVisible ? 'none' : 'block';
 }
 
@@ -73,7 +72,6 @@ function buscarPorEjercicio(event) {
       });
 }
 
-// ✅ Se ejecuta todo cuando carga la página
 document.addEventListener("DOMContentLoaded", function () {
   cargarResultados();
 
@@ -142,13 +140,13 @@ function actualizarEjercicio() {
   })
     .then(response => response.text())
     .then(data => {
-      console.log("✅ Actualización completada");
+      console.log("Actualización completada");
       cargarResultados(); 
       actualizarSelect();
 
     })
     .catch(error => {
-      console.error("❌ Error al actualizar:", error);
+      console.error("Error al actualizar:", error);
     });
 }
 
@@ -321,12 +319,6 @@ formFalsa.addEventListener("submit", function (event) {
 });
 
 
-
-
-
-
-
-
 // Metodo de PUNTO FIJO
 
 function cargarResultadosPuntoFijo() {
@@ -401,8 +393,8 @@ formPuntoFijo.addEventListener("submit", function (event) {
     .then(response => response.text())
     .then(msg => {
       console.log("Servidor (Punto Fijo):", msg);
-      cargarResultadosPuntoFijo(); // 👈 actualizar tabla
-      actualizarSelectPuntoFijo(); // ⬅️ actualiza combo y gráfica
+      cargarResultadosPuntoFijo(); 
+      actualizarSelectPuntoFijo(); 
     })
     .catch(error => {
       console.error("Error Punto Fijo:", error);
@@ -425,11 +417,12 @@ function actualizarSelectPuntoFijo() {
       });
 
       if (ejerciciosUnicos.length > 0) {
-        select.value = ejerciciosUnicos[ejerciciosUnicos.length - 1]; // Último
+        select.value = ejerciciosUnicos[ejerciciosUnicos.length - 1];
         cargarGraficaPuntoFijo();
       }
     });
 }
+
 function cargarGraficaPuntoFijo() {
   const ejercicio = document.getElementById('ejercicioSelectPuntoFijo').value;
   document.getElementById('grafica-interactiva-puntofijo').src = `/static/imagenes/punto_fijo_${ejercicio}.html?t=${Date.now()}`;
@@ -470,12 +463,6 @@ function buscarPorEjercicioPuntoFijo(event) {
       console.error("Error al buscar ejercicio Punto Fijo:", error);
     });
 }
-
-
-
-
-
-
 
 
 // FUNCIONES PARA NEWTON-RAPHSON
@@ -539,7 +526,6 @@ function actualizarEjercicioNewton(event) {
     .catch(error => console.error('Error al actualizar ejercicio Newton-Raphson:', error));
 }
 
-// 🔥 FORMULARIO NEWTON-RAPHSON
 const formNewton = document.querySelector('form[action="http://127.0.0.1:5000/newton-raphson"]');
 formNewton.addEventListener("submit", function (event) {
   event.preventDefault();
@@ -552,15 +538,12 @@ formNewton.addEventListener("submit", function (event) {
     .then(response => response.text())
     .then(msg => {
       console.log("Servidor (Newton-Raphson):", msg);
-      cargarResultadosNewton(); // 👈 actualizar tabla
+      cargarResultadosNewton(); 
     })
     .catch(error => {
       console.error("Error Newton-Raphson:", error);
     });
 });
-
-
-
 
 // FUNCIONES PARA SECANTE
 
@@ -638,7 +621,7 @@ formSecante.addEventListener("submit", function (event) {
     .then(response => response.text())
     .then(msg => {
       console.log("Servidor (Secante):", msg);
-      cargarResultadosSecante(); // 👈 actualizar tabla
+      cargarResultadosSecante(); 
       actualizarSelectSecante();
     })
     .catch(error => {
@@ -713,14 +696,6 @@ function buscarPorEjercicioSecante(event) {
 }
 
 
-
-
-
-
-
-
-
-
 //Exportacion a Excel//
 function exportarTabla(idTabla, nombreArchivo, nombreHoja) {
   const tabla = document.getElementById(idTabla);
@@ -757,6 +732,7 @@ function exportarTodo() {
   // Guardar el archivo
   XLSX.writeFile(wb, 'metodos_numericos_completo.xlsx');
 }
+
 function cargarResultadosNewtonSistemas() {
   fetch('http://127.0.0.1:5000/resultados-newton-sistemas')
     .then(response => response.json())
@@ -857,29 +833,23 @@ function eliminarEjercicioNewtonSistemas(event) {
 function actualizarEjercicioNewtonSistemas(event) {
   event.preventDefault();
 
-  // ✅ Seleccionamos el formulario correcto de Newton-Sistemas
   const form = document.querySelector('form[action="http://127.0.0.1:5000/newton-sistemas"]');
   
-  // ✅ Creamos el FormData directamente desde el formulario
   const formData = new FormData(form);
 
-  // ✅ Enviamos la solicitud POST a /actualizar-newton-sistemas
   fetch('http://127.0.0.1:5000/actualizar-newton-sistemas', {
     method: 'POST',
     body: formData
   })
     .then(response => response.text())
     .then(data => {
-      alert(data);                // ✅ Mostramos el mensaje del servidor
-      cargarResultadosNewtonSistemas(); // ✅ Recargamos la tabla de resultados
+      alert(data);               
+      cargarResultadosNewtonSistemas(); 
     })
     .catch(error => {
       console.error('Error al actualizar ejercicio Newton Sistemas:', error);
     });
 }
-
-
-
 
 
 // Cargar lista de ejercicios al iniciar
@@ -913,7 +883,7 @@ window.addEventListener('load', () => {
   fetch('/resultados-falsa-posicion')
     .then(res => res.json())
     .then(data => {
-      const ejerciciosUnicos = [...new Set(data.map(row => row[0]))]; // row[0] = ejercicio
+      const ejerciciosUnicos = [...new Set(data.map(row => row[0]))]; 
       const select = document.getElementById('ejercicioSelectFalsa');
       ejerciciosUnicos.forEach(ej => {
         const option = document.createElement('option');
@@ -934,14 +904,13 @@ function cargarGraficaFalsa() {
   document.getElementById('grafica-interactiva-falsa').src = `/static/imagenes/falsa_posicion_${ejercicio}.html?t=${Date.now()}`;
 }
 
-// 🚀 Cargar resultados automáticamente al abrir la página
 window.addEventListener('load', function () {
   cargarResultados();         // Bisección
   cargarResultadosFalsa();    // Falsa Posición
   cargarResultadosPuntoFijo(); // Punto Fijo
   cargarResultadosNewton();    // Newton-Raphson
-  cargarResultadosSecante(); // ⬅️ Agregamos esta nueva carga automática
-  cargarResultadosNewtonSistemas();  // 🚀 también cargarlo al abrir la página
+  cargarResultadosSecante(); 
+  cargarResultadosNewtonSistemas(); 
 });
 
 

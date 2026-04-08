@@ -68,7 +68,7 @@ def ejecutar_punto_fijo():
         conn.close()
 
         try:
-            x_vals = np.linspace(-5, 6, 500)  # Rango amplio como en GeoGebra
+            x_vals = np.linspace(-5, 6, 500) 
             y_vals = [g(x) for x in x_vals]
 
             x0 = resultados[0][2]  # xi de la primera iteración

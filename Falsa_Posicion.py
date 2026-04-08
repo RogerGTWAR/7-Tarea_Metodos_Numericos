@@ -90,7 +90,6 @@ def ejecutar_falsa_posicion():
         conn.commit()
         cursor.close()
         conn.close()
-        # 📈 Gráfica estilo GeoGebra para Falsa Posición
         try:
             x_vals = np.linspace(xa_original - 10, xb_original + 10, 500)
             y_vals = [f(x) for x in x_vals]
@@ -107,13 +106,13 @@ def ejecutar_falsa_posicion():
 
             layout = go.Layout(
                 title='Gráfica del Método de Falsa Posición',
-                plot_bgcolor='white',       # Fondo blanco
-                paper_bgcolor='white',      # Fondo blanco alrededor
+                plot_bgcolor='white',      
+                paper_bgcolor='white', 
                 xaxis=dict(
                     title='x',
                     range=[-55, 125],
                     showgrid=True,
-                    gridcolor='lightgray',   # Cuadrícula gris clara
+                    gridcolor='lightgray',   
                     zeroline=True,
                     zerolinecolor='black',
                     zerolinewidth=2
@@ -128,10 +127,8 @@ def ejecutar_falsa_posicion():
                     zerolinewidth=2
                 ),
                 shapes=[
-                    # Línea vertical en x = 0
                     dict(type='line', x0=0, y0=-1000, x1=0, y1=1000,
                         line=dict(color='black', width=2)),
-                    # Línea horizontal en y = 0
                     dict(type='line', x0=-1000, y0=0, x1=1000, y1=0,
                         line=dict(color='black', width=2))
                 ],
@@ -146,18 +143,16 @@ def ejecutar_falsa_posicion():
             pio.write_html(fig, file=html_path, auto_open=False)
 
         except Exception as err:
-            print("❌ Error generando gráfica Falsa Posición:", err)
+            print("Error generando gráfica Falsa Posición:", err)
             html_path = ""
 
         return jsonify({
-            "mensaje": "✅ Cálculos de falsa posición realizados y guardados correctamente.",
+            "mensaje": "Cálculos de falsa posición realizados y guardados correctamente.",
             "imagen": "/" + html_path
         })
 
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
-
-
+        return f"Error: {str(e)}", 500
 
 
 @falsa_bp.route('/resultados-falsa-posicion')
@@ -188,7 +183,7 @@ def eliminar_falsa_posicion(ejercicio):
         conn.close()
         return f"Registros del ejercicio #{ejercicio} eliminados correctamente."
     except Exception as e:
-        return f"❌ Error: {str(e)}", 500
+        return f"Error: {str(e)}", 500
 
 @falsa_bp.route('/actualizar-falsa-posicion', methods=['POST'])
 def actualizar_falsa_posicion():
